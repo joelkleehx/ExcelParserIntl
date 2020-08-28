@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections.Generic;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
 
 namespace Readi18nTranslationData
 
@@ -47,8 +48,10 @@ namespace Readi18nTranslationData
                     bool loadData = false;
                     char englishTextColumn = 'C';
                     char tagColumn = 'E';
+                    List<Translation> translations = new List<Translation>();
                     List<TranslationKey> translationKeys = new List<TranslationKey>();
                     int translationKeyID = 0;
+                    int translationID = 0;
 
                     foreach (Row row in rows)
                     {
@@ -96,28 +99,53 @@ namespace Readi18nTranslationData
                                 Tag = tag
                             };
                             translationKeys.Add(translationKey);
+
+                            translationID++;
+                            Translation translation = new Translation
+                            {
+                                TranslationLanguageID = (int)Language.USEnglish,
+                                TranslationKeyID = translationKeyID,
+                                TranslatedText = englishText,
+                            };
+                            translations.Add(translation);
+
                         };
                     }
                     Program.GenerateSQLTranslationKey(translationKeys);
+                    Program.GenerateSQLTranslation(translations);
                 }
                 Console.ReadLine();
             }
 
         }
 
+        
+
         public static void GenerateSQLTranslationKey(List<TranslationKey> translationKeys)
         {
-            Console.WriteLine ("gimme me some sql");
-
-            //todo: create object instead of list of strings;
-
             foreach (var translationKey in translationKeys)
             {
-                string sqlInsert = String.Format("INSERT #TranslationKey (TranslationKeyID, Tag) VALUES ({0}, '{1}')",translationKey.TranslationKeyID.ToString(), translationKey.Tag);
+                string sqlInsert = String.Format("INSERT #TranslationKey (TranslationKeyID, Tag) VALUES ({0},'{1}')",
+                    translationKey.TranslationKeyID.ToString(),
+                    translationKey.Tag
+                    );
+                Console.WriteLine(sqlInsert);
+            }
+        }
+
+        public static void GenerateSQLTranslation(List<Translation> translations)
+        {
+            foreach (var translation in translations)
+            {
+                string sqlInsert = String.Format("INSERT #Translation (TranslationLanguageID, TranslationKeyID, TranslatedText) VALUES ({0},{1},'{2}')", 
+                    translation.TranslationLanguageID.ToString(),
+                    translation.TranslationKeyID.ToString(),
+                    translation.TranslatedText
+                    );
                 Console.WriteLine(sqlInsert);
             }
         }
     }
 }
 
-//INSERT #TranslationKey (TranslationKeyID, Tag) VALUES (1, 'LoginModule_Title')
+
