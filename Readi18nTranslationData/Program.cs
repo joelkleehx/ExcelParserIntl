@@ -16,12 +16,7 @@ namespace Readi18nTranslationData
         {
             //String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\HQ-Internationalization-v2-Finnish.xlsx";
             String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\sample.xlsx";
-            //string sheetName = "Locations";
-
-            //get sheet names dynamically
-            //    https://docs.microsoft.com/en-us/office/open-xml/how-to-retrieve-a-list-of-the-worksheets-in-a-spreadsheet
-
-
+        
 
 
 
@@ -111,26 +106,77 @@ namespace Readi18nTranslationData
 
                         };
                     }
-                    Program.GenerateSQLTranslationKey(translationKeys);
-                    Program.GenerateSQLTranslation(translations);
+
+                    List<string> insertSQL = Program.GenerateSQLTranslationKey(translationKeys);
+
+                    //string startupPath = System.IO.Directory.GetCurrentDirectory();
+
+                    string startupPath = System.IO.Directory.GetCurrentDirectory();
+                    
+
+                    string startupPath45 = Environment.CurrentDirectory;
+
+                    string[] initialSQL = File.ReadAllLines(@"..\sqlTemplates\TranslationKeyInit.txt");
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\temp\mystuff.sql"))
+                    {
+
+                        foreach (string line in initialSQL)
+                        {
+                            file.WriteLine(line);
+                        }
+
+                        foreach (string line in insertSQL)
+                        {
+                            file.WriteLine(line);
+                        }
+                    }
+
+                   
+
+
+                    //foreach (string insertLine in insertSQL)
+                    //{
+
+                    //    Console.WriteLine(insertLine);
+                    //}
+
+
+                    //    Program.GenerateSQLTranslation(translations);
+
+
+
+
+
+                    // Openwriter for translation.sql ; put into the output folder
+                    // open up intialize;
+
+                    // generate sql
+
+                    // open up load records
+
+
+
+
                 }
-                Console.ReadLine();
+             
             }
 
         }
 
         
 
-        public static void GenerateSQLTranslationKey(List<TranslationKey> translationKeys)
+        public static List<string> GenerateSQLTranslationKey(List<TranslationKey> translationKeys)
         {
+            List<string> insertSQL = new List<string>();
             foreach (var translationKey in translationKeys)
             {
                 string sqlInsert = String.Format("INSERT #TranslationKey (TranslationKeyID, Tag) VALUES ({0},'{1}')",
                     translationKey.TranslationKeyID.ToString(),
                     translationKey.Tag
                     );
-                Console.WriteLine(sqlInsert);
+                insertSQL.Add(sqlInsert);
             }
+            return insertSQL;
         }
 
         public static void GenerateSQLTranslation(List<Translation> translations)

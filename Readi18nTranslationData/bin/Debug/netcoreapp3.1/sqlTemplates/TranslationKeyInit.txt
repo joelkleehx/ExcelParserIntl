@@ -1,0 +1,8 @@
+﻿SET NOCOUNT ON;
+
+CREATE TABLE #TranslationKey (
+	[TranslationKeyID] [INT] NOT NULL,
+	[Tag] [NVARCHAR](255) NOT NULL,
+ CONSTRAINT [PK_TranslationKey_Temp] PRIMARY KEY CLUSTERED ([TranslationKeyID] ASC)
+ )
+
