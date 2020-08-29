@@ -1,9 +1,0 @@
-﻿SET NOCOUNT ON;
-
-CREATE TABLE #Translation (
-	[TranslationLanguageID] [INT] NOT NULL,
-	[TranslationKeyID] [INT] NOT NULL,
-	[TranslatedText] [NVARCHAR](MAX) NULL,
- CONSTRAINT [PK_Translation_Temp] PRIMARY KEY CLUSTERED ([TranslationKeyID] ASC, [TranslationLanguageID] ASC)
-)
-

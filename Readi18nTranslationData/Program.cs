@@ -107,16 +107,11 @@ namespace Readi18nTranslationData
                         };
                     }
 
+
+                    string[] initialSQL = File.ReadAllLines(String.Format(@"{0}\sqlTemplates\TranslationKeyInit.txt", Environment.CurrentDirectory));
                     List<string> insertSQL = Program.GenerateSQLTranslationKey(translationKeys);
+                    string[] loadSQL = File.ReadAllLines(String.Format(@"{0}\sqlTemplates\TranslationKeyLoadRecords.txt", Environment.CurrentDirectory));
 
-                    //string startupPath = System.IO.Directory.GetCurrentDirectory();
-
-                    string startupPath = System.IO.Directory.GetCurrentDirectory();
-                    
-
-                    string startupPath45 = Environment.CurrentDirectory;
-
-                    string[] initialSQL = File.ReadAllLines(@"..\sqlTemplates\TranslationKeyInit.txt");
                     using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\temp\mystuff.sql"))
                     {
 
@@ -126,6 +121,11 @@ namespace Readi18nTranslationData
                         }
 
                         foreach (string line in insertSQL)
+                        {
+                            file.WriteLine(line);
+                        }
+
+                        foreach (string line in loadSQL)
                         {
                             file.WriteLine(line);
                         }
