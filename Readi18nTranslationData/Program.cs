@@ -5,22 +5,47 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections.Generic;
-
+using System.Runtime.CompilerServices;
 
 namespace Readi18nTranslationData
 
 {
+
+
+
+   
+
     class Program
     {
+
+       
+      
         static void Main(string[] args)
         {
-            //String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\HQ-Internationalization-v2-Finnish.xlsx";
-            String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\sample.xlsx";
 
-            // UserDefinedTagsPar
 
-            // wait until you see Tim's course to set up config issues
+            List<string> completeSQL = new List<string>(); 
+
+             String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\HQ-Internationalization-v2-Finnish.xlsx";
+            //String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\sample.xlsx";
+
+
+            //SQLStatement sqlInsertTranslationKey = new SQLStatement();
+            //sqlInsertTranslationKey.StatementLines = new List<string>();
+
+            //sqlInsertTranslationKey.AddStatementLines("fred");
+            //sqlInsertTranslationKey.AddStatementLines("fred");
+
+            //sqlStatement.StatementLines.Add("fred");
+            //sqlStatement.StatementLines.Add("bob");
+            //sqlStatement.StatementLines.Add("jim");
+
+
+
+
+
             // use Tim Corey's course to set up .Net Core config files: https://www.iamtimcorey.com/courses/515189/lectures/9448253
+
 
 
 
@@ -33,90 +58,108 @@ namespace Readi18nTranslationData
                     SharedStringTablePart sstpart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
                     SharedStringTable sst = sstpart.SharedStringTable;
 
-                    //workbookPart.WorksheetParts.Count()
+                    // WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+                    List<WorksheetPart> worksheetParts = workbookPart.WorksheetParts.ToList(); 
 
-                    WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
-                    Worksheet sheet = worksheetPart.Worksheet;
-
-                    var cells = sheet.Descendants<Cell>();
-                    var rows = sheet.Descendants<Row>();
-
-                    //  Console.WriteLine("Row count = {0}", rows.LongCount());
-                    //  Console.WriteLine("Cell count = {0}", cells.LongCount());
-
-                    bool loadData = false;
-                    char englishTextColumn = 'C';
-                    char tagColumn = 'E';
-                    List<Translation> translations = new List<Translation>();
-                    List<TranslationKey> translationKeys = new List<TranslationKey>();
-                    int translationKeyID = 0;
-                    int translationID = 0;
-
-                    foreach (Row row in rows)
+                    foreach (WorksheetPart worksheetPart in worksheetParts)
                     {
-                        string englishText = "";
-                        string tag = "";
-                        foreach (Cell cell in row.Elements<Cell>())
-                        {
-                            if ((cell.DataType != null) && (cell.DataType == CellValues.SharedString))
-                            {
-                                int ssid = int.Parse(cell.CellValue.Text);
-                                string cellValue = sst.ChildElements[ssid].InnerText;
-
-
-                                if (loadData)
-                                {
-                                    string cellRef = cell.CellReference.ToString();
-                                    char columnLetter = cellRef[0];
-
-                                    if (columnLetter == englishTextColumn)
-                                    {
-                                        englishText = cellValue;
-                                    }
-
-                                    if (columnLetter == tagColumn)
-                                    {
-                                        tag = cellValue;
-                                    }
-                                }
-
-                                // do I need to check for "Screen" or can I just run the loader as-is;
-                                if (cellValue == "Screen")
-                                {
-                                    loadData = true;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (String.IsNullOrEmpty(tag) == false)
-                        {
-                            translationKeyID++;
-                            TranslationKey translationKey = new TranslationKey
-                            {
-                                TranslationKeyID = translationKeyID,
-                                Tag = tag
-                            };
-                            translationKeys.Add(translationKey);
-
-                            translationID++;
-                            Translation translation = new Translation
-                            {
-                                TranslationLanguageID = (int)Language.USEnglish,
-                                TranslationKeyID = translationKeyID,
-                                TranslatedText = englishText,
-                            };
-                            translations.Add(translation);
-
-                        };
+                        ProcessWorksheet(worksheetPart, sstpart, sst);
+                       
                     }
-
-                    LoadTranslationKey(translationKeys);
-                    LoadTranslation(translations);
                 }
+                Console.ReadLine();
             }
         }
 
+        public static void ProcessWorksheet(WorksheetPart worksheetPart, SharedStringTablePart sstpart, SharedStringTable sst)
+        {
+            Worksheet sheet = worksheetPart.Worksheet;
+
+           
+
+            var rows = sheet.Descendants<Row>();
+           
+            bool loadData = false;
+            char englishTextColumn = 'C';
+            char tagColumn = 'E';
+            List<Translation> translations = new List<Translation>();
+            List<TranslationKey> translationKeys = new List<TranslationKey>();
+            int translationKeyID = 0;
+            int translationID = 0;
+
+            var counter = 0;
+
+            foreach (Row row in rows)
+            {
+                string englishText = "";
+                string tag = "";
+                foreach (Cell cell in row.Elements<Cell>())
+                {
+                    if ((cell.DataType != null) && (cell.DataType == CellValues.SharedString))
+                    {
+                        int ssid = int.Parse(cell.CellValue.Text);
+                        string cellValue = sst.ChildElements[ssid].InnerText;
+
+
+                        if (loadData)
+                        {
+                            string cellRef = cell.CellReference.ToString();
+                            char columnLetter = cellRef[0];
+
+                            if (columnLetter == englishTextColumn)
+                            {
+                                englishText = cellValue;
+                               Console.WriteLine(englishText);
+                                counter++;
+
+                            }
+
+                            if (columnLetter == tagColumn)
+                            {
+                                tag = cellValue;
+                                Console.WriteLine(tag);
+                            }
+                        }
+
+                        // do I need to check for "Screen" or can I just run the loader as-is;
+                        if (cellValue == "Screen")
+                        {
+                            loadData = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (String.IsNullOrEmpty(tag) == false)
+                {
+                    translationKeyID++;
+                    TranslationKey translationKey = new TranslationKey
+                    {
+                        TranslationKeyID = translationKeyID,
+                        Tag = tag
+                    };
+                    translationKeys.Add(translationKey);
+
+                    translationID++;
+                    Translation translation = new Translation
+                    {
+                        TranslationLanguageID = (int)Language.USEnglish,
+                        TranslationKeyID = translationKeyID,
+                        TranslatedText = englishText,
+                    };
+                    translations.Add(translation);
+
+                };
+            }
+            Console.WriteLine(counter);
+            Console.ReadLine();
+        //    LoadTranslationKey(translationKeys);
+            LoadTranslation(translations);
+
+            
+        }
+
+        //public static List<string> GenerateSQLTranslationKey(List<TranslationKey> translationKeys, SQLStatement sqlInsertTranslationKey)
         public static List<string> GenerateSQLTranslationKey(List<TranslationKey> translationKeys)
         {
             List<string> insertSQL = new List<string>();
@@ -127,6 +170,7 @@ namespace Readi18nTranslationData
                     translationKey.Tag
                     );
                 insertSQL.Add(sqlInsert);
+               // sqlInsertTranslationKey.AddStatementLines(sqlInsert);
             }
             return insertSQL;
         }
@@ -136,7 +180,7 @@ namespace Readi18nTranslationData
             List<string> insertSQL = new List<string>();
             foreach (var translation in translations)
             {
-                string sqlInsert = String.Format("INSERT #Translation (TranslationLanguageID, TranslationKeyID, TranslatedText) VALUES ({0},{1},'{2}')", 
+                string sqlInsert = String.Format("INSERT #Translation (TranslationLanguageID, TranslationKeyID, TranslatedText) VALUES ({0},{1},'{2}')",
                     translation.TranslationLanguageID.ToString(),
                     translation.TranslationKeyID.ToString(),
                     translation.TranslatedText
@@ -154,8 +198,7 @@ namespace Readi18nTranslationData
 
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\temp\661-TranslationKey.sql"))
             {
-
-                foreach (string line in initialSQL)
+                foreach (string line in initialSQL) 
                 {
                     file.WriteLine(line);
                 }
@@ -180,7 +223,6 @@ namespace Readi18nTranslationData
 
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\temp\662-Translation.sql"))
             {
-
                 foreach (string line in initialSQL)
                 {
                     file.WriteLine(line);
@@ -197,9 +239,8 @@ namespace Readi18nTranslationData
                 }
             }
         }
-
-
     }
 }
+
 
 
