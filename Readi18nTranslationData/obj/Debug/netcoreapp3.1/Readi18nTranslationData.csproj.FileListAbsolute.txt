@@ -1,7 +1,6 @@
 C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\Readi18nTranslationData.exe
 C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\sqlTemplates\TranslationKeyInit.txt
-C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\sqlTemplates\TranslationTableInitialize.txt
-C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\sqlTemplates\TranslationTableLoadRecords.txt
+C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\sqlTemplates\TranslationKeyLoadRecords.txt
 C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\Readi18nTranslationData.deps.json
 C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\Readi18nTranslationData.runtimeconfig.json
 C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\Readi18nTranslationData.runtimeconfig.dev.json
@@ -22,4 +21,6 @@ C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\obj\Debug\netc
 C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\obj\Debug\netcoreapp3.1\Readi18nTranslationData.dll
 C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\obj\Debug\netcoreapp3.1\Readi18nTranslationData.pdb
 C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\obj\Debug\netcoreapp3.1\Readi18nTranslationData.genruntimeconfig.cache
-C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\sqlTemplates\TranslationKeyLoadRecords.txt
+C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\obj\Debug\netcoreapp3.1\Readi18nTranslationData.csprojAssemblyReference.cache
+C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\sqlTemplates\TranslationInit.txt
+C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\bin\Debug\netcoreapp3.1\sqlTemplates\TranslationLoadRecords.txt

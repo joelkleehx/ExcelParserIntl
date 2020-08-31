@@ -16,12 +16,11 @@
     <None Update="sqlTemplates\TranslationKeyLoadRecords.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="sqlTemplates\TranslationTableInitialize.txt">
+    <None Update="sqlTemplates\TranslationInit.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="sqlTemplates\TranslationTableLoadRecords.txt">
+    <None Update="sqlTemplates\TranslationLoadRecords.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

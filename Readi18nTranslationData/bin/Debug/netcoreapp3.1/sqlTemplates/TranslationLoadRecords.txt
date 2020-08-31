@@ -12,7 +12,7 @@ WHEN NOT MATCHED BY SOURCE
 OUTPUT
    $action,
    inserted.*,
-   deleted.*
+   deleted.*;
 DROP TABLE #Translation
 
 SET NOCOUNT OFF;

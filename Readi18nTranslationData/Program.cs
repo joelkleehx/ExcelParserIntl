@@ -5,7 +5,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.Collections.Generic;
-using DocumentFormat.OpenXml.Vml.Spreadsheet;
+
 
 namespace Readi18nTranslationData
 
@@ -16,15 +16,19 @@ namespace Readi18nTranslationData
         {
             //String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\HQ-Internationalization-v2-Finnish.xlsx";
             String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\sample.xlsx";
-        
+
+            // UserDefinedTagsPar
+
+            // wait until you see Tim's course to set up config issues
+            // use Tim Corey's course to set up .Net Core config files: https://www.iamtimcorey.com/courses/515189/lectures/9448253
 
 
 
-     
+
             using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (SpreadsheetDocument doc = SpreadsheetDocument.Open(fs, false))
-                { 
+                {
                     WorkbookPart workbookPart = doc.WorkbookPart;
                     SharedStringTablePart sstpart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
                     SharedStringTable sst = sstpart.SharedStringTable;
@@ -64,10 +68,10 @@ namespace Readi18nTranslationData
                                 {
                                     string cellRef = cell.CellReference.ToString();
                                     char columnLetter = cellRef[0];
-                                    
+
                                     if (columnLetter == englishTextColumn)
                                     {
-                                        englishText = cellValue;   
+                                        englishText = cellValue;
                                     }
 
                                     if (columnLetter == tagColumn)
@@ -107,63 +111,11 @@ namespace Readi18nTranslationData
                         };
                     }
 
-
-                    string[] initialSQL = File.ReadAllLines(String.Format(@"{0}\sqlTemplates\TranslationKeyInit.txt", Environment.CurrentDirectory));
-                    List<string> insertSQL = Program.GenerateSQLTranslationKey(translationKeys);
-                    string[] loadSQL = File.ReadAllLines(String.Format(@"{0}\sqlTemplates\TranslationKeyLoadRecords.txt", Environment.CurrentDirectory));
-
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\temp\mystuff.sql"))
-                    {
-
-                        foreach (string line in initialSQL)
-                        {
-                            file.WriteLine(line);
-                        }
-
-                        foreach (string line in insertSQL)
-                        {
-                            file.WriteLine(line);
-                        }
-
-                        foreach (string line in loadSQL)
-                        {
-                            file.WriteLine(line);
-                        }
-                    }
-
-                   
-
-
-                    //foreach (string insertLine in insertSQL)
-                    //{
-
-                    //    Console.WriteLine(insertLine);
-                    //}
-
-
-                    //    Program.GenerateSQLTranslation(translations);
-
-
-
-
-
-                    // Openwriter for translation.sql ; put into the output folder
-                    // open up intialize;
-
-                    // generate sql
-
-                    // open up load records
-
-
-
-
+                    LoadTranslationKey(translationKeys);
+                    LoadTranslation(translations);
                 }
-             
             }
-
         }
-
-        
 
         public static List<string> GenerateSQLTranslationKey(List<TranslationKey> translationKeys)
         {
@@ -179,8 +131,9 @@ namespace Readi18nTranslationData
             return insertSQL;
         }
 
-        public static void GenerateSQLTranslation(List<Translation> translations)
+        public static List<string> GenerateSQLTranslation(List<Translation> translations)
         {
+            List<string> insertSQL = new List<string>();
             foreach (var translation in translations)
             {
                 string sqlInsert = String.Format("INSERT #Translation (TranslationLanguageID, TranslationKeyID, TranslatedText) VALUES ({0},{1},'{2}')", 
@@ -188,9 +141,64 @@ namespace Readi18nTranslationData
                     translation.TranslationKeyID.ToString(),
                     translation.TranslatedText
                     );
-                Console.WriteLine(sqlInsert);
+                insertSQL.Add(sqlInsert);
+            }
+            return insertSQL;
+        }
+
+        public static void LoadTranslationKey(List<TranslationKey> translationKeys)
+        {
+            string[] initialSQL = File.ReadAllLines(String.Format(@"{0}\sqlTemplates\TranslationKeyInit.txt", Environment.CurrentDirectory));
+            List<string> insertSQL = Program.GenerateSQLTranslationKey(translationKeys);
+            string[] loadSQL = File.ReadAllLines(String.Format(@"{0}\sqlTemplates\TranslationKeyLoadRecords.txt", Environment.CurrentDirectory));
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\temp\661-TranslationKey.sql"))
+            {
+
+                foreach (string line in initialSQL)
+                {
+                    file.WriteLine(line);
+                }
+
+                foreach (string line in insertSQL)
+                {
+                    file.WriteLine(line);
+                }
+
+                foreach (string line in loadSQL)
+                {
+                    file.WriteLine(line);
+                }
             }
         }
+
+        public static void LoadTranslation(List<Translation> translations)
+        {
+            string[] initialSQL = File.ReadAllLines(String.Format(@"{0}\sqlTemplates\TranslationInit.txt", Environment.CurrentDirectory));
+            List<string> insertSQL = Program.GenerateSQLTranslation(translations);
+            string[] loadSQL = File.ReadAllLines(String.Format(@"{0}\sqlTemplates\TranslationLoadRecords.txt", Environment.CurrentDirectory));
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\temp\662-Translation.sql"))
+            {
+
+                foreach (string line in initialSQL)
+                {
+                    file.WriteLine(line);
+                }
+
+                foreach (string line in insertSQL)
+                {
+                    file.WriteLine(line);
+                }
+
+                foreach (string line in loadSQL)
+                {
+                    file.WriteLine(line);
+                }
+            }
+        }
+
+
     }
 }
 
