@@ -14,10 +14,10 @@ namespace Readi18nTranslationData
     {
 
         public static int translationKeyID { get; set; }
+
         static void Main(string[] args)
         {
             List<string> insertSQL = new List<string>();
-           
 
             String fileName = @"C:\Users\JCK0412\source\repos\ExcelParser\Readi18nTranslationData\data\HQ-Internationalization-v2-Finnish.xlsx";
             using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -41,23 +41,16 @@ namespace Readi18nTranslationData
                         ProcessWorksheet(worksheetPart, sstpart, sst, insertSQL);
                     }
 
-                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\temp\661-TranslationKey.sql"))
-                    {
-                        foreach (string line in initialSQL)
-                        {
-                            file.WriteLine(line);
-                        }
+                    string path = Path.Combine(".", "OutputData");
+                    string fullTranslationKeyFile = Path.Combine(path, "661-TranslationKey.sql");
 
-                        foreach (string line in insertSQL)
-                        {
-                            file.WriteLine(line);
-                        }
+                    Directory.CreateDirectory(path);
 
-                        foreach (string line in loadSQL)
-                        {
-                            file.WriteLine(line);
-                        }
-                    }
+                    File.WriteAllLines(fullTranslationKeyFile, initialSQL);
+                    File.AppendAllLines(fullTranslationKeyFile, insertSQL);
+                    File.AppendAllLines(fullTranslationKeyFile, loadSQL);
+
+                
                 }
             }
         }
@@ -141,6 +134,9 @@ namespace Readi18nTranslationData
             {
                 insertSQL.Add(insertStatement);
             }
+
+
+
 
         }
 
